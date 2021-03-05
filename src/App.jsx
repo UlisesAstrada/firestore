@@ -1,15 +1,25 @@
 import React, {useState, useEffect} from 'react'
 import './App.css';
+import {store} from './firebaseconfig'
 
 function App() {
 
   const[nombre, setNombre] = useState('')
   const[phone, setPhone] = useState('')
   const[usuario, setUsuario] = useState([])
+  const[error, setError] = useState('')
 
   const setUsuarios = (e) => {
     e.preventDefault()
-    if(!nombre.trim()) 
+    if(!nombre.trim()) {
+      setError('El campo nombre está vacío')
+    }
+    if(!phone.trim()) {
+      setError('El campo teléfono está vacío')
+    }
+    if(!phone.trim() && !nombre.trim()) {
+      setError('Los campos nombre y teléfono están vacíos')
+    }
   }
 
   return (
@@ -17,7 +27,7 @@ function App() {
       <div className="row">
         <div className="col">
           <h2>Formulario de usuarios</h2>
-          <form className="form-group ml-3">
+          <form onSubmit={setUsuarios} className="form-group ml-3">
             <input 
               onChange={(e) =>{setNombre(e.target.value)}}
               className="form-control"
@@ -28,10 +38,18 @@ function App() {
               onChange={(e) =>{setPhone(e.target.value)}}
               className="form-control mt-3"
               type="text"
-              placeholder="Introduce el número"
+              placeholder="Introduce el teléfono"
             />
             <input  type="submit" value="Registrar" className="btn btn-dark btn- mt-3"/>
           </form>
+          {
+            error ? 
+            (
+              <div><p className="alert alert-danger" role="alert">{error}</p></div>
+            )
+            :
+            (<span></span>)
+          }
         </div>
         <div className="col">
           <h2>Lista de tu agenda</h2>
