@@ -18,7 +18,7 @@ function App() {
               type="text"
               placeholder="Introduce el nombre"
             />
-            <input type="submit" value="Registrar" className="btn btn-dark btn-block"/>
+            <input type="submit" value="Registrar" className="btn btn-dark btn- mt-3"/>
           </form>
         </div>
         <div className="col">
