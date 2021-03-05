@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import './App.css';
 import {store} from './firebaseconfig'
+import swal from 'sweetalert'
 
 function App() {
 
@@ -9,7 +10,7 @@ function App() {
   const[usuario, setUsuario] = useState([])
   const[error, setError] = useState('')
 
-  const setUsuarios = (e) => {
+  const setUsuarios = async (e) => {
     e.preventDefault()
     if(!nombre.trim()) {
       setError('El campo nombre está vacío')
@@ -20,6 +21,22 @@ function App() {
     if(!phone.trim() && !nombre.trim()) {
       setError('Los campos nombre y teléfono están vacíos')
     }
+
+    const usuario = {
+      nombre: nombre,
+      telefono: phone
+    }
+
+    try {
+      const data = await store.collection('Agenda').add(usuario)
+      console.log('Tarea añadida')
+      swal("Usuario registrado!", "Se ha enviado un mensaje de confirmación", "success")
+    } catch (error) {
+      console.error(error);
+    }
+    setNombre('')
+    setPhone('')
+
   }
 
   return (
@@ -29,12 +46,14 @@ function App() {
           <h2>Formulario de usuarios</h2>
           <form onSubmit={setUsuarios} className="form-group ml-3">
             <input 
+              value={nombre}
               onChange={(e) =>{setNombre(e.target.value)}}
               className="form-control"
               type="text"
               placeholder="Introduce el nombre"
             />
             <input
+              value={phone}
               onChange={(e) =>{setPhone(e.target.value)}}
               className="form-control mt-3"
               type="text"
