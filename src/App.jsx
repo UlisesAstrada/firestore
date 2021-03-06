@@ -115,7 +115,7 @@ function App() {
     <div className="App">
       <div className="row">
         <div className="col">
-          <h2>Formulario de usuarios</h2>
+          <h2>Agregar contacto</h2>
           <form onSubmit={modoEdicion ? setUpdate : setUsuarios} className="form-group ml-3">
             <input 
               value={nombre}
@@ -163,7 +163,7 @@ function App() {
                 </li>
             )))
             :
-            (<span><p className="alert alert-warning" role="alert">Lo siento, no hay usuarios en tu agenda</p></span>)
+            (<span><p className="alert alert-warning" role="alert">No hay usuarios en tu agenda</p></span>)
           }
           </ul>
         </div>
