@@ -41,13 +41,32 @@ function App() {
       const { docs } = await store.collection('Agenda').get()
       const newArray = docs.map(item =>({id: item.id, ...item.data()}))
       setUsuariosAgenda(newArray)
-      console.log('Tarea añadida')
-      swal(`Usuario ${nombre} registrado!`, `Se ha enviado un mensaje al número ${phone}`, "success")
+      console.log('Usuario añadido')
+      swal(`Usuario ${nombre} registrado!`, `Número agendado: ${phone}`, "success")
     } catch (error) {
       console.error(error);
     }
     setNombre('')
     setPhone('')
+  }
+
+  const deleteUser = async (id) => {
+    try {
+      await store.collection('Agenda').doc(id).delete()
+      const { docs } = await store.collection('Agenda').get()
+      const newArray = docs.map(item =>({id: item.id, ...item.data()}))
+      setUsuariosAgenda(newArray)
+      console.log('Usuario eliminado')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const updateUser = (id) => {
+    const data = store.collection('Agenda').doc(id).get()
+    console.log(data)
+  }
+ 
   }
 
   return (
@@ -87,7 +106,10 @@ function App() {
           {
             usuariosAgenda.length !== 0 ?
             (usuariosAgenda.map(item => (
-              <li className="list-group-item" key={item.id}>{item.nombre} -- {item.telefono}</li>
+                <li className="list-group-item" key={item.id}>{item.nombre} -- {item.telefono}
+                  <button onClick={(id) => {}} className="btn btn-primary float-right ml-2">EDITAR</button>
+                  <button onClick={(id) => {deleteUser(item.id)}} className="btn btn-danger float-right">ELIMINAR</button>
+                </li>
             )))
             :
             (<span><p className="alert alert-warning" role="alert">Lo siento, no hay usuarios en tu agenda</p></span>)
