@@ -38,14 +38,16 @@ function App() {
 
     try {
       const data = await store.collection('Agenda').add(usuario)
+      const { docs } = await store.collection('Agenda').get()
+      const newArray = docs.map(item =>({id: item.id, ...item.data()}))
+      setUsuariosAgenda(newArray)
       console.log('Tarea añadida')
-      swal("Usuario registrado!", "Se ha enviado un mensaje de confirmación", "success")
+      swal(`Usuario ${nombre} registrado!`, `Se ha enviado un mensaje al número ${phone}`, "success")
     } catch (error) {
       console.error(error);
     }
     setNombre('')
     setPhone('')
-
   }
 
   return (
