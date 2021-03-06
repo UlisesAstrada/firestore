@@ -83,11 +83,11 @@ function App() {
         </div>
         <div className="col">
           <h2>Lista de tu agenda</h2>
-          <ul>
+          <ul className="list-group">
           {
             usuariosAgenda.length !== 0 ?
             (usuariosAgenda.map(item => (
-              <li key={item.id}>{item.nombre} -- {item.telefono}</li>
+              <li className="list-group-item" key={item.id}>{item.nombre} -- {item.telefono}</li>
             )))
             :
             (<span><p className="alert alert-warning" role="alert">Lo siento, no hay usuarios en tu agenda</p></span>)
