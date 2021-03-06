@@ -5,6 +5,8 @@ import swal from 'sweetalert'
 
 function App() {
 
+  const[modoEdicion, setModoEdicion] = useState(null)
+  const[idUsuario, setIdUsuario] = useState('')
   const[nombre, setNombre] = useState('')
   const[phone, setPhone] = useState('')
   const[usuariosAgenda, setUsuariosAgenda] = useState([])
@@ -62,19 +64,59 @@ function App() {
     }
   }
 
-  const updateUser = (id) => {
-    const data = store.collection('Agenda').doc(id).get()
-    console.log(data)
+  const editUser = async (id) => {
+    try {
+      const data = await store.collection('Agenda').doc(id).get()
+      const { nombre, telefono } = data.data()
+      setIdUsuario(id)
+      setNombre(nombre)
+      setPhone(telefono)
+      setModoEdicion(true)
+      console.log(data.data())
+    } catch (error) {
+      console.error(error);
+    }
   }
- 
+
+  const setUpdate = async (e) => {
+    e.preventDefault()
+    if(!nombre.trim()) {
+      setError('El campo nombre está vacío')
+    }
+    if(!phone.trim()) {
+      setError('El campo teléfono está vacío')
+    }
+    if(!phone.trim() && !nombre.trim()) {
+      setError('Los campos nombre y teléfono están vacíos')
+    }
+    
+    const updatedUser = {
+      nombre: nombre,
+      telefono: phone
+    }
+
+    try {
+      await store.collection('Agenda').doc(idUsuario).set(updatedUser)
+      const { docs } = await store.collection('Agenda').get()
+      const newArray = docs.map(item =>({id: item.id, ...item.data()}))
+      setUsuariosAgenda(newArray)
+    } catch (error) {
+      console.error(error);
+    }
+    
+    setNombre('')
+    setPhone('')
+    setIdUsuario('')
+    setModoEdicion(false)
   }
+  
 
   return (
     <div className="App">
       <div className="row">
         <div className="col">
           <h2>Formulario de usuarios</h2>
-          <form onSubmit={setUsuarios} className="form-group ml-3">
+          <form onSubmit={modoEdicion ? setUpdate : setUsuarios} className="form-group ml-3">
             <input 
               value={nombre}
               onChange={(e) =>{setNombre(e.target.value)}}
@@ -89,7 +131,16 @@ function App() {
               type="text"
               placeholder="Introduce el teléfono"
             />
-            <input  type="submit" value="Registrar" className="btn btn-dark btn- mt-3"/>
+            {
+              modoEdicion ?
+              (
+                <input  type="submit" value="EDITAR" className="btn btn-dark btn- mt-3"/>
+              )
+              :
+              (
+                <input  type="submit" value="REGISTRAR" className="btn btn-dark btn- mt-3"/>
+              )
+            }
           </form>
           {
             error ? 
@@ -107,7 +158,7 @@ function App() {
             usuariosAgenda.length !== 0 ?
             (usuariosAgenda.map(item => (
                 <li className="list-group-item" key={item.id}>{item.nombre} -- {item.telefono}
-                  <button onClick={(id) => {}} className="btn btn-primary float-right ml-2">EDITAR</button>
+                  <button onClick={(id) => {editUser(item.id)}} className="btn btn-primary float-right ml-2">EDITAR</button>
                   <button onClick={(id) => {deleteUser(item.id)}} className="btn btn-danger float-right">ELIMINAR</button>
                 </li>
             )))
