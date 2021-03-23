@@ -33,13 +33,13 @@ function App() {
       setError('Los campos nombre y teléfono están vacíos')
     }
 
-    // const usuario = {
-    //   nombre: nombre,
-    //   telefono: phone
-    // }
+    //  const usuario = {
+    //    nombre: nombre,
+    //    telefono: phone
+    //  }
 
     try {
-      // const data = await store.collection('Agenda').add(usuario)
+      await store.collection('Agenda').add(usuario)
       const { docs } = await store.collection('Agenda').get()
       const newArray = docs.map(item =>({id: item.id, ...item.data()}))
       setUsuariosAgenda(newArray)
